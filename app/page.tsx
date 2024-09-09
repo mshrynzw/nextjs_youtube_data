@@ -5,6 +5,12 @@ import {useEffect, useState} from "react"
 import {db} from "@/lib/firebase"
 import {doc, collection, getDocs, query, orderBy} from "firebase/firestore"
 import ViewCountChart from "@/components/ViewCountChart"
+import LikeCountChart from "@/components/LikeCountChart"
+
+interface Channel {
+  id: string;
+  name: string;
+}
 
 const Page: NextPage = () => {
   const [channelsData, setChannelsData] = useState<any[]>([])
@@ -16,8 +22,8 @@ const Page: NextPage = () => {
   }
 
   useEffect(() => {
-    const fetchChannelData = async (channelId: string) => {
-      const channelDoc = doc(db, "channels", channelId)
+    const fetchChannelData = async (channel: Channel) => {
+      const channelDoc = doc(db, "channels", channel.id)
       const videosCollection = collection(channelDoc, "videos")
 
       const q = query(videosCollection, orderBy("published_at", "asc"))
@@ -33,20 +39,20 @@ const Page: NextPage = () => {
         }
       })
 
-      return {id: channelId, videos: videosData}
+      return {...channel, videos: videosData}
     }
 
     const fetchData = async () => {
       try {
         console.log("Fetching data...")
-        const channelIds = [
-          "UCYTximhpSat0HHFPAI0UpUA",
-          "UCxBR2bnAFAavDHpHtQrTA9Q",
-          "UCsZIVV29dmXPrvItQeaDKJQ",
-          "UC1ax6Oh62fiv2Q7L51bSvYQ",
-          "UCDgibsAF-DG37dnd9FTpfoQ"
+        const channels = [
+          {id: "UCYTximhpSat0HHFPAI0UpUA", name: "西園寺"},
+          {id: "UCxBR2bnAFAavDHpHtQrTA9Q", name: "スーツ 交通 / Suit Train"},
+          {id: "UCsZIVV29dmXPrvItQeaDKJQ", name: "ひろき / 鉄道Channel"},
+          {id: "UC1ax6Oh62fiv2Q7L51bSvYQ", name: "謎のちゃんねる"},
+          {id: "UCDgibsAF-DG37dnd9FTpfoQ", name: "がみ"}
         ]
-        const channelsData = await Promise.all(channelIds.map(fetchChannelData))
+        const channelsData = await Promise.all(channels.map(fetchChannelData))
 
         console.log("Channels data:", channelsData)
         setChannelsData(channelsData)
@@ -68,13 +74,19 @@ const Page: NextPage = () => {
   }
 
   return (
-    <>
+    <div className="h-screen flex flex-col">
       {channelsData.length > 0 ? (
-        <ViewCountChart channelsData={channelsData}/>
+        <>
+           <div className="flex-1 min-h-0">
+            <ViewCountChart channelsData={channelsData}/>
+            {/*<LikeCountChart channelsData={channelsData}/>*/}
+          </div>
+          {/* 必要に応じて、スクロール可能な領域にチャンネルデータの詳細を表示 */}
+        </>
       ) : (
         <div>Loading channels data...</div>
       )}
-    </>
+    </div>
   )
 }
 

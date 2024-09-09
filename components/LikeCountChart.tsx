@@ -7,7 +7,7 @@ const Chart = dynamic(() => import("react-apexcharts"), {ssr: false})
 
 interface VideoData {
   published_at: string;
-  view_count: number;
+  like_count: number;
 }
 
 interface ChannelData {
@@ -16,11 +16,11 @@ interface ChannelData {
   videos: VideoData[];
 }
 
-interface ViewCountChartProps {
+interface LikeCountChartProps {
   channelsData: ChannelData[];
 }
 
-const ViewCountChart: React.FC<ViewCountChartProps> = ({channelsData}) => {
+const LikeCountChart: React.FC<LikeCountChartProps> = ({channelsData}) => {
   const [options, setOptions] = useState({})
   const [series, setSeries] = useState([])
   const [chartHeight, setChartHeight] = useState('100vh')
@@ -51,14 +51,14 @@ const ViewCountChart: React.FC<ViewCountChartProps> = ({channelsData}) => {
         name: channel.name,
         data: sortedData.map(item => ({
           x: new Date(item.published_at).getTime(),
-          y: item.view_count
+          y: item.like_count
         }))
       }
     })
 
     setOptions({
       chart: {
-        id: "view-count-chart",
+        id: "like-count-chart",
         type: "line",
         zoom: {
           enabled: true,
@@ -78,7 +78,7 @@ const ViewCountChart: React.FC<ViewCountChartProps> = ({channelsData}) => {
       },
       yaxis: {
         title: {
-          text: "View Count"
+          text: "Like Count"
         },
         labels: {
           formatter: function(val) {
@@ -124,4 +124,4 @@ const ViewCountChart: React.FC<ViewCountChartProps> = ({channelsData}) => {
   )
 }
 
-export default ViewCountChart
+export default LikeCountChart
