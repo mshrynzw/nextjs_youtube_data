@@ -6,6 +6,7 @@ import {db} from "@/lib/firebase"
 import {doc, collection, getDocs, query, orderBy} from "firebase/firestore"
 import ViewCountChart from "@/components/ViewCountChart"
 import LikeCountChart from "@/components/LikeCountChart"
+import LikeViewCountChart from "@/components/LikeViewCountChart"
 
 interface Channel {
   id: string;
@@ -13,6 +14,7 @@ interface Channel {
 }
 
 const Page: NextPage = () => {
+  const [selectChart, setSelectChart] = useState<string>("like_view")
   const [channelsData, setChannelsData] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
 
@@ -76,13 +78,38 @@ const Page: NextPage = () => {
   return (
     <div className="h-screen flex flex-col">
       {channelsData.length > 0 ? (
-        <>
-           <div className="flex-1 min-h-0">
-            <ViewCountChart channelsData={channelsData}/>
-            {/*<LikeCountChart channelsData={channelsData}/>*/}
+        <div className="h-screen flex flex-col">
+          <nav className="flex flex-row w-full px-8 py-4 space-x-8">
+            <button
+              className="mr-1 mb-1 w-full rounded-xl bg-gray-200 p-2 px-6 py-3 text-sm font-bold uppercase shadow-xl outline-none duration-300 ease-in-out text-blueGray-600 bg-blueGray-800 hover:text-blueGray-200 hover:bg-blueGray-600 hover:-translate-y-1 hover:scale-110 focus:outline-none"
+              onClick={() => setSelectChart("view")}
+            >
+              視聴回数
+            </button>
+            <button
+              className="mr-1 mb-1 w-full rounded-xl bg-gray-200 p-2 px-6 py-3 text-sm font-bold uppercase shadow-xl outline-none duration-300 ease-in-out text-blueGray-600 bg-blueGray-800 hover:text-blueGray-200 hover:bg-blueGray-600 hover:-translate-y-1 hover:scale-110 focus:outline-none"
+              onClick={() => setSelectChart("like")}
+            >
+              高評価数
+            </button>
+            <button
+              className="mr-1 mb-1 w-full rounded-xl bg-gray-200 p-2 px-6 py-3 text-sm font-bold uppercase shadow-xl outline-none duration-300 ease-in-out text-blueGray-600 bg-blueGray-800 hover:text-blueGray-200 hover:bg-blueGray-600 hover:-translate-y-1 hover:scale-110 focus:outline-none"
+              onClick={() => setSelectChart("like_view")}
+            >
+              高評価 / 視聴回数
+            </button>
+          </nav>
+
+          <div className="flex-1 min-h-0">
+            {selectChart === "view" ? (
+              <ViewCountChart channelsData={channelsData}/>
+            ) : selectChart === "like" ? (
+              <LikeCountChart channelsData={channelsData}/>
+            ) : (
+              <LikeViewCountChart channelsData={channelsData}/>
+            )}
           </div>
-          {/* 必要に応じて、スクロール可能な領域にチャンネルデータの詳細を表示 */}
-        </>
+        </div>
       ) : (
         <div>Loading channels data...</div>
       )}

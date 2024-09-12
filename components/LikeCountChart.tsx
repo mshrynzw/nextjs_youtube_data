@@ -1,6 +1,6 @@
 "use client"
 
-import {useState, useEffect, useRef} from "react"
+import React, {useState, useEffect, useRef} from "react"
 import dynamic from "next/dynamic"
 
 const Chart = dynamic(() => import("react-apexcharts"), {ssr: false})
@@ -87,7 +87,7 @@ const LikeCountChart: React.FC<LikeCountChartProps> = ({channelsData}) => {
         }
       },
       title: {
-        text: "鉄道系YouTuber視聴回数",
+        text: "高評価数",
         align: "center"
       },
       tooltip: {

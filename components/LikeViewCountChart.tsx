@@ -7,6 +7,7 @@ const Chart = dynamic(() => import("react-apexcharts"), {ssr: false})
 
 interface VideoData {
   published_at: string;
+  like_count: number;
   view_count: number;
 }
 
@@ -16,11 +17,11 @@ interface ChannelData {
   videos: VideoData[];
 }
 
-interface ViewCountChartProps {
+interface LikeViewCountChartProps {
   channelsData: ChannelData[];
 }
 
-const ViewCountChart: React.FC<ViewCountChartProps> = ({channelsData}) => {
+const LikeViewCountChart: React.FC<LikeViewCountChartProps> = ({channelsData}) => {
   const [options, setOptions] = useState({})
   const [series, setSeries] = useState([])
   const [chartHeight, setChartHeight] = useState('100vh')
@@ -51,14 +52,14 @@ const ViewCountChart: React.FC<ViewCountChartProps> = ({channelsData}) => {
         name: channel.name,
         data: sortedData.map(item => ({
           x: new Date(item.published_at).getTime(),
-          y: item.view_count
+          y: item.like_count / item.view_count * 100
         }))
       }
     })
 
     setOptions({
       chart: {
-        id: "view-count-chart",
+        id: "like-view-count-chart",
         type: "line",
         zoom: {
           enabled: true,
@@ -78,7 +79,7 @@ const ViewCountChart: React.FC<ViewCountChartProps> = ({channelsData}) => {
       },
       yaxis: {
         title: {
-          text: "View Count"
+          text: "%"
         },
         labels: {
           formatter: function(val) {
@@ -87,7 +88,7 @@ const ViewCountChart: React.FC<ViewCountChartProps> = ({channelsData}) => {
         }
       },
       title: {
-        text: "視聴回数",
+        text: "高評価 / 視聴回数",
         align: "center"
       },
       tooltip: {
@@ -124,4 +125,4 @@ const ViewCountChart: React.FC<ViewCountChartProps> = ({channelsData}) => {
   )
 }
 
-export default ViewCountChart
+export default LikeViewCountChart

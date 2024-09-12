@@ -14,7 +14,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Youtube Data",
+  title: "鉄道系YouTuber",
   description: "",
 };
 
