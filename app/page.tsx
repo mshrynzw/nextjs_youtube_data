@@ -15,7 +15,7 @@ interface Channel {
 
 const Page: NextPage = () => {
   const [selectChart, setSelectChart] = useState<string>("like_view")
-  const [channelsData, setChannelsData] = useState<any[]>([])
+  const [channelsData, setChannelsData] = useState<never[]>([])
   const [error, setError] = useState<string | null>(null)
 
   const formatDate = (seconds: number) => {
