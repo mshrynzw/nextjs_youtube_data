@@ -13,9 +13,20 @@ interface Channel {
   name: string;
 }
 
+interface VideoData {
+  id: string;
+  published_at: string;
+  view_count: number;
+  like_count: number;
+}
+
+interface ChannelData extends Channel {
+  videos: VideoData[];
+}
+
 const Page: NextPage = () => {
   const [selectChart, setSelectChart] = useState<string>("like_view")
-  const [channelsData, setChannelsData] = useState<never[]>([])
+  const [channelsData, setChannelsData] = useState<ChannelData[]>([])
   const [error, setError] = useState<string | null>(null)
 
   const formatDate = (seconds: number) => {
@@ -24,7 +35,7 @@ const Page: NextPage = () => {
   }
 
   useEffect(() => {
-    const fetchChannelData = async (channel: Channel) => {
+    const fetchChannelData = async (channel: Channel): Promise<ChannelData> => {
       const channelDoc = doc(db, "channels", channel.id)
       const videosCollection = collection(channelDoc, "videos")
 
@@ -36,8 +47,9 @@ const Page: NextPage = () => {
         const data = doc.data()
         return {
           id: doc.id,
-          ...data,
-          published_at: formatDate(data.published_at.seconds)
+          published_at: formatDate(data.published_at.seconds),
+          view_count: data.view_count,
+          like_count: data.like_count
         }
       })
 
@@ -47,7 +59,7 @@ const Page: NextPage = () => {
     const fetchData = async () => {
       try {
         console.log("Fetching data...")
-        const channels = [
+        const channels: Channel[] = [
           {id: "UCYTximhpSat0HHFPAI0UpUA", name: "西園寺"},
           {id: "UCxBR2bnAFAavDHpHtQrTA9Q", name: "スーツ 交通 / Suit Train"},
           {id: "UCsZIVV29dmXPrvItQeaDKJQ", name: "ひろき / 鉄道Channel"},
